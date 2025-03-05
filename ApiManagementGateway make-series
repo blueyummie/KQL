@@ -1,0 +1,11 @@
+let start = datetime(2024-09-30 00:00:00);
+let end = now();
+ApiManagementGatewayLogs
+| where TimeGenerated >= ago (1d)
+| where BackendUrl startswith "https://BackeEnd/Url/End/Here"
+| where ResponseCode >= 400 and ResponseCode <= 499
+| where Method == "GET"
+| extend ip=tostring(RequestHeaders.["X-Forwarded-For"])
+| extend cip = tostring(split(ip, ",", 0))
+| make-series hits = count() on TimeGenerated in range (start, end, 5m) by cip
+| render timechart
