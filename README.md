@@ -1,0 +1,2 @@
+# KQL
+Useful KQL queries
